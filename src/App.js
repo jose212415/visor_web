@@ -7,6 +7,7 @@ const SensorData = () => {
     pressure: '---',
     temperature: '---',
     humidity: '---',
+    lux: '---',
   });
 
   const [message, setMessage] = useState('');
@@ -33,9 +34,9 @@ const SensorData = () => {
       console.log('Mensaje recibido:', data);
 
       // Verificar el formato del mensaje antes de procesarlo
-      if (data.includes('Pressure') && data.includes('Temperature') && data.includes('Humidity')) {
-        const [pressure, temperature, humidity] = data.split(', ').map((item) => item.split(': ')[1]);
-        setSensorData({ pressure, temperature, humidity });
+      if (data.includes('Pressure') && data.includes('Temperature') && data.includes('Humidity') && data.includes('Lux')) {
+        const [pressure, temperature, humidity, lux] = data.split(', ').map((item) => item.split(': ')[1]);
+        setSensorData({ pressure, temperature, humidity, lux });
       } else {
         console.error("Formato de mensaje incorrecto:", data);
       }
@@ -64,6 +65,7 @@ const SensorData = () => {
         <p><span className="label">Presión:</span> {sensorData.pressure} hPa</p>
         <p><span className="label">Temperatura:</span> {sensorData.temperature} °C</p>
         <p><span className="label">Humedad:</span> {sensorData.humidity} %</p>
+        <p><span className="label">Nivel Luz:</span> {sensorData.lux} lux</p>
       </div>
       <div className="message-section">
         <input
