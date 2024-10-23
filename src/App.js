@@ -4,10 +4,11 @@ import './App.css'; // Importamos el estilo CSS
 
 const SensorData = () => {
   const [sensorData, setSensorData] = useState({
-    pressure: '---',
-    temperature: '---',
-    humidity: '---',
     lux: '---',
+    tempAHT20: '---',
+    humidity: '---',
+    tempBMP280: '---',
+    pressure: '---',
   });
 
   const [message, setMessage] = useState('');
@@ -34,9 +35,10 @@ const SensorData = () => {
       console.log('Mensaje recibido:', data);
 
       // Verificar el formato del mensaje antes de procesarlo
-      if (data.includes('Pressure') && data.includes('Temperature') && data.includes('Humidity') && data.includes('Lux')) {
-        const [pressure, temperature, humidity, lux] = data.split(', ').map((item) => item.split(': ')[1]);
-        setSensorData({ pressure, temperature, humidity, lux });
+      if (data.includes('Luz') && data.includes('Temp AHT20') && data.includes('Humedad') && data.includes('Temp BMP280') && data.includes('Presión')) {
+        // Dividir el mensaje por "|"
+        const [lux, tempAHT20, humidity, tempBMP280, pressure] = data.split('|').map(item => item.split(': ')[1].trim());
+        setSensorData({ lux, tempAHT20, humidity, tempBMP280, pressure });
       } else {
         console.error("Formato de mensaje incorrecto:", data);
       }
@@ -47,35 +49,15 @@ const SensorData = () => {
     };
   }, []);
 
-  // Función para enviar el texto al broker MQTT
-  const sendMessage = () => {
-    if (client) { // Asegurarse de que el cliente está conectado antes de publicar
-      client.publish('lcd/data', message);  // Publicar el mensaje en el tópico 'lcd/data'
-      console.log(`Mensaje publicado: ${message}`);
-      setMessage('');  // Limpiar el campo de entrada después de enviar el mensaje
-    } else {
-      console.log("Cliente MQTT no está conectado aún");
-    }
-  };
-
   return (
     <div className="container">
       <h1>Datos del Sensor</h1>
       <div className="sensor-card">
-        <p><span className="label">Presión:</span> {sensorData.pressure} hPa</p>
-        <p><span className="label">Temperatura:</span> {sensorData.temperature} °C</p>
-        <p><span className="label">Humedad:</span> {sensorData.humidity} %</p>
-        <p><span className="label">Nivel Luz:</span> {sensorData.lux} lux</p>
-      </div>
-      <div className="message-section">
-        <input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}  // Almacena el texto escrito
-          placeholder="Escribe tu mensaje"
-          className="input-message"
-        />
-        <button onClick={sendMessage} className="btn-send">Enviar mensaje</button>  {/* Botón para enviar */}
+        <p><span className="label">Nivel Luz:</span> {sensorData.lux}</p>
+        <p><span className="label">Temperatura AHT20:</span> {sensorData.tempAHT20}</p>
+        <p><span className="label">Humedad:</span> {sensorData.humidity}</p>
+        <p><span className="label">Temperatura BMP280:</span> {sensorData.tempBMP280}</p>
+        <p><span className="label">Presión:</span> {sensorData.pressure}</p>
       </div>
     </div>
   );
