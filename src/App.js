@@ -11,13 +11,9 @@ const SensorData = () => {
     pressure: '---',
   });
 
-  const [message, setMessage] = useState('');
-  const [client, setClient] = useState(null); // Estado para almacenar el cliente MQTT
-
   useEffect(() => {
     // Conectarse al broker MQTT y guardarlo en el estado
     const mqttClient = mqtt.connect('wss://test.mosquitto.org:8081/mqtt');
-    setClient(mqttClient); // Almacena el cliente en el estado
 
     mqttClient.on('connect', () => {
       console.log('Conectado a MQTT');
